@@ -111,6 +111,22 @@ METHOD(plugin_t, get_name, char*,
 }
 
 /**
+ * Enable/disable logger depending on config
+ */
+static void register_logger(private_vici_plugin_t *this)
+{
+	if (lib->settings->get_bool(lib->settings,
+							"%s.plugins.vici.logger", FALSE, lib->ns))
+	{
+		charon->bus->add_logger(charon->bus, &this->logger->logger);
+	}
+	else
+	{
+		charon->bus->remove_logger(charon->bus, &this->logger->logger);
+	}
+}
+
+/**
  * Register vici plugin features
  */
 static bool register_vici(private_vici_plugin_t *this,
@@ -141,7 +157,7 @@ static bool register_vici(private_vici_plugin_t *this,
 										  &this->config->backend);
 			charon->attributes->add_provider(charon->attributes,
 											 &this->attrs->provider);
-			charon->bus->add_logger(charon->bus, &this->logger->logger);
+			register_logger(this);
 			charon->bus->add_listener(charon->bus, &this->query->listener);
 			return TRUE;
 		}
@@ -167,6 +183,13 @@ static bool register_vici(private_vici_plugin_t *this,
 		this->query->destroy(this->query);
 		this->dispatcher->destroy(this->dispatcher);
 	}
+	return TRUE;
+}
+
+METHOD(plugin_t, reload, bool,
+	private_vici_plugin_t *this)
+{
+	register_logger(this);
 	return TRUE;
 }
 
@@ -198,7 +221,7 @@ plugin_t *vici_plugin_create()
 		.public = {
 			.plugin = {
 				.get_name = _get_name,
-				.reload = (void*)return_false,
+				.reload = _reload,
 				.get_features = _get_features,
 				.destroy = _destroy,
 			},

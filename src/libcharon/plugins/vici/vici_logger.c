@@ -130,6 +130,8 @@ METHOD(logger_t, log_, void,
 METHOD(logger_t, get_level, level_t,
 	private_vici_logger_t *this, debug_t group)
 {
+	/* anything higher might produce a loop as sending messages or listening
+	 * for clients might cause log messages itself */
 	return LEVEL_CTRL;
 }
 

@@ -1,2 +1,5 @@
 charon.plugins.vici.socket = unix://${piddir}/charon.vici
 	Socket the vici plugin serves clients.
+
+charon.plugins.vici.logger = no
+	Whether 'log' events should be raised for log messages on level 1.
