@@ -37,7 +37,7 @@ struct private_curve25519_public_key_t {
 	chunk_t pubkey;
 
 	/**
-	 * reference counter
+	 * Reference counter
 	 */
 	refcount_t ref;
 };
@@ -55,8 +55,8 @@ METHOD(public_key_t, verify, bool,
 	hasher_t *hasher;
 	uint8_t d = 0, k[HASH_SIZE_SHA512], r[32], *sig;
 	int i;
-    ge_p3 A;
-    ge_p2 R;
+	ge_p3 A;
+	ge_p2 R;
 
 	if (scheme != SIGN_ED25519)
 	{
@@ -74,8 +74,8 @@ METHOD(public_key_t, verify, bool,
 
 	if (sig[63] & 0xe0)
 	{
-		DBG1(DBG_LIB, "the three most significant bits of Ed25519 signature"
-					   "are not zero");
+		DBG1(DBG_LIB, "the three most significant bits of Ed25519 signature "
+			 "are not zero");
 		return FALSE;
 	}
 
@@ -89,10 +89,10 @@ METHOD(public_key_t, verify, bool,
 	{
 		d |= this->pubkey.ptr[i];
 	}
-	if (d == 0)
+	if (!d)
 	{
 		return FALSE;
-	};
+	}
 
 	hasher = lib->crypto->create_hasher(lib->crypto, HASH_SHA512);
 	if (!hasher)
@@ -119,8 +119,8 @@ METHOD(public_key_t, encrypt_, bool,
 	private_curve25519_public_key_t *this, encryption_scheme_t scheme,
 	chunk_t plain, chunk_t *crypto)
 {
-	DBG1(DBG_LIB, "encryption scheme %N not supported",
-				   encryption_scheme_names, scheme);
+	DBG1(DBG_LIB, "encryption scheme %N not supported", encryption_scheme_names,
+		 scheme);
 	return FALSE;
 }
 
@@ -151,7 +151,8 @@ METHOD(public_key_t, get_encoding, bool,
 }
 
 METHOD(public_key_t, get_fingerprint, bool,
-	private_curve25519_public_key_t *this, cred_encoding_type_t type, chunk_t *fp)
+	private_curve25519_public_key_t *this, cred_encoding_type_t type,
+	chunk_t *fp)
 {
 	bool success;
 
@@ -201,7 +202,8 @@ static const asn1Object_t pubkeyObjects[] = {
 /**
  * See header.
  */
-curve25519_public_key_t *curve25519_public_key_load(key_type_t type, va_list args)
+curve25519_public_key_t *curve25519_public_key_load(key_type_t type,
+													va_list args)
 {
 	private_curve25519_public_key_t *this;
 	chunk_t blob = chunk_empty, object;
@@ -251,7 +253,7 @@ curve25519_public_key_t *curve25519_public_key_load(key_type_t type, va_list arg
 			case ED25519_SUBJECT_PUBLIC_KEY_ALGORITHM:
 			{
 				oid = asn1_parse_algorithmIdentifier(object,
-									parser->get_level(parser) + 1, NULL);
+										parser->get_level(parser) + 1, NULL);
 				if (oid != OID_ED25519)
 				{
 					goto end;
@@ -279,7 +281,6 @@ end:
 		destroy(this);
 		return NULL;
 	}
-
 	return &this->public;
 }
 
@@ -288,14 +289,10 @@ end:
  */
 chunk_t curve25519_public_key_info_encode(chunk_t pubkey)
 {
-	chunk_t encoding;
-
-	encoding = asn1_wrap(ASN1_SEQUENCE, "mm",
+	return asn1_wrap(ASN1_SEQUENCE, "mm",
 					asn1_wrap(ASN1_SEQUENCE, "m",
 						asn1_build_known_oid(OID_ED25519)),
 					asn1_bitstring("c", pubkey));
-
-	return encoding;
 }
 
 /**
@@ -322,15 +319,13 @@ bool curve25519_public_key_fingerprint(chunk_t pubkey,
 	hasher = lib->crypto->create_hasher(lib->crypto, HASH_SHA1);
 	if (!hasher || !hasher->allocate_hash(hasher, key, fp))
 	{
-		DBG1(DBG_LIB, "SHA1 hash algorithm not supported, fingerprinting failed");
+		DBG1(DBG_LIB, "SHA1 hash algorithm not supported, "
+			 "fingerprinting failed");
 		DESTROY_IF(hasher);
 		free(key.ptr);
-
 		return FALSE;
 	}
 	hasher->destroy(hasher);
 	free(key.ptr);
-
 	return TRUE;
 }
-

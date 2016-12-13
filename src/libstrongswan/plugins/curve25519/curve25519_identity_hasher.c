@@ -21,6 +21,5 @@
 curve25519_identity_hasher_t *curve25519_identity_hasher_create(hash_algorithm_t algo)
 {
 	/* since the identity hasher is never actually used, always return NULL */
-
 	return NULL;
 }

@@ -50,7 +50,7 @@ struct private_curve25519_private_key_t {
 	chunk_t pubkey;
 
 	/**
-	 * reference count
+	 * Reference count
 	 */
 	refcount_t ref;
 };
@@ -115,8 +115,8 @@ METHOD(private_key_t, decrypt, bool,
 	private_curve25519_private_key_t *this, encryption_scheme_t scheme,
 	chunk_t crypto, chunk_t *plain)
 {
-	DBG1(DBG_LIB, "encryption scheme %N not supported",
-				   encryption_scheme_names, scheme);
+	DBG1(DBG_LIB, "encryption scheme %N not supported", encryption_scheme_names,
+		 scheme);
 	return FALSE;
 }
 
@@ -175,7 +175,8 @@ METHOD(private_key_t, get_encoding, bool,
 }
 
 METHOD(private_key_t, get_fingerprint, bool,
-	private_curve25519_private_key_t *this, cred_encoding_type_t type, chunk_t *fp)
+	private_curve25519_private_key_t *this, cred_encoding_type_t type,
+	chunk_t *fp)
 {
 	bool success;
 
@@ -250,7 +251,7 @@ static private_curve25519_private_key_t *curve25519_private_key_create(chunk_t k
 		.ref = 1,
 	);
 
-	/* Derive secret scalar s from private key */
+	/* derive secret scalar s from private key */
 	if (!hasher->get_hash(hasher, key, this->s))
 	{
 		destroy(this);
@@ -263,7 +264,7 @@ static private_curve25519_private_key_t *curve25519_private_key_create(chunk_t k
 	this->s[31] &= 0x3f;
 	this->s[31] |= 0x40;
 
-	/* Derive public key */
+	/* derive public key */
 	ge_scalarmult_base(&A, this->s);
 	ge_p3_tobytes(this->pubkey.ptr, &A);
 
@@ -273,7 +274,8 @@ static private_curve25519_private_key_t *curve25519_private_key_create(chunk_t k
 /**
  * See header.
  */
-curve25519_private_key_t *curve25519_private_key_gen(key_type_t type, va_list args)
+curve25519_private_key_t *curve25519_private_key_gen(key_type_t type,
+													 va_list args)
 {
 	private_curve25519_private_key_t *this;
 	chunk_t key;
@@ -312,7 +314,8 @@ curve25519_private_key_t *curve25519_private_key_gen(key_type_t type, va_list ar
 /**
  * See header.
  */
-curve25519_private_key_t *curve25519_private_key_load(key_type_t type, va_list args)
+curve25519_private_key_t *curve25519_private_key_load(key_type_t type,
+													  va_list args)
 {
 	private_curve25519_private_key_t *this;
 	chunk_t key = chunk_empty;
@@ -341,4 +344,3 @@ curve25519_private_key_t *curve25519_private_key_load(key_type_t type, va_list a
 
 	return this ? &this->public : NULL;
 }
-

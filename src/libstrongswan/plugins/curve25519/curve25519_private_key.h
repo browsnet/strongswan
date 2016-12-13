@@ -44,7 +44,8 @@ struct curve25519_private_key_t {
  * @param args		builder_part_t argument list
  * @return 			generated key, NULL on failure
  */
-curve25519_private_key_t *curve25519_private_key_gen(key_type_t type, va_list args);
+curve25519_private_key_t *curve25519_private_key_gen(key_type_t type,
+													 va_list args);
 
 /**
  * Load an Ed25519 private key.
@@ -53,6 +54,7 @@ curve25519_private_key_t *curve25519_private_key_gen(key_type_t type, va_list ar
  * @param args		builder_part_t argument list
  * @return 			loaded key, NULL on failure
  */
-curve25519_private_key_t *curve25519_private_key_load(key_type_t type, va_list args);
+curve25519_private_key_t *curve25519_private_key_load(key_type_t type,
+													  va_list args);
 
 #endif /** CURVE25519_PRIVATE_KEY_H_ @}*/

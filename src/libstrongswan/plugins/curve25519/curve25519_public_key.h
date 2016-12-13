@@ -46,7 +46,8 @@ struct curve25519_public_key_t {
  * @param type		type of the key, must be KEY_ED25519
  * @return 			loaded key, NULL on failure
  */
-curve25519_public_key_t *curve25519_public_key_load(key_type_t type, va_list args);
+curve25519_public_key_t *curve25519_public_key_load(key_type_t type,
+													va_list args);
 
 /* The following functions are shared with the curve25519_private_key class */
 
