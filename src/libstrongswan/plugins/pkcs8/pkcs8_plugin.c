@@ -44,8 +44,6 @@ METHOD(plugin_t, get_features, int,
 	static plugin_feature_t f[] = {
 		PLUGIN_REGISTER(PRIVKEY, pkcs8_private_key_load, FALSE),
 			PLUGIN_PROVIDE(PRIVKEY, KEY_ANY),
-		PLUGIN_REGISTER(PRIVKEY, pkcs8_private_key_load, FALSE),
-			PLUGIN_PROVIDE(PRIVKEY, KEY_ANY),
 			PLUGIN_PROVIDE(PRIVKEY, KEY_RSA),
 			PLUGIN_PROVIDE(PRIVKEY, KEY_ECDSA),
 			PLUGIN_PROVIDE(PRIVKEY, KEY_ED25519),
